@@ -283,6 +283,20 @@ export default function App() {
     )}`;
     window.open(url, '_blank');
   };
+  // Lógica automática de Horario de Atención (Ej: Lunes a Viernes de 11:00 a 22:30 hrs)
+  const verificarHorario = () => {
+    const ahora = new Date();
+    const dia = ahora.getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
+    const horaActual = ahora.getHours() + ahora.getMinutes() / 60;
+
+    // Maqui Sandwich abre de Lunes (1) a Viernes (5), de 11:00 a 22:30 (22.5)
+    const esDiaLaboral = dia >= 1 && dia <= 5;
+    const estaEnHorario = horaActual >= 11 && horaActual < 22.5;
+
+    return esDiaLaboral && estaEnHorario;
+  };
+
+  const estaAbierto = verificarHorario();
 
   return (
     <div className="min-h-screen bg-stone-950 text-stone-100 pb-28 font-sans">
@@ -290,10 +304,17 @@ export default function App() {
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center justify-between">
             <div>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 mb-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                Abierto • Retiro y Delivery
-              </span>
+              {estaAbierto ? (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 mb-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  Abierto ahora • Retiro y Delivery
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/20 text-red-300 border border-red-500/30 mb-2">
+                  <span className="w-2 h-2 rounded-full bg-red-400"></span>
+                  Cerrado • Horario: Lun a Vie 11:00 a 22:30
+                </span>
+              )}
               <h1 className="text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
                 🍇 Maqui Sandwich
               </h1>
